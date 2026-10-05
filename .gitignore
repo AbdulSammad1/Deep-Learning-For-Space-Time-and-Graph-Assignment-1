@@ -1,0 +1,6 @@
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+Question 1/checkpoints/
+Question 2 - Leaderboard/outputs/
