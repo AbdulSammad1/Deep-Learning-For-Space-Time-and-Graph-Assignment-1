@@ -1,25 +1,32 @@
 \documentclass[11pt]{article}
 
-\usepackage[margin=1in]{geometry}
+\usepackage[a4paper,margin=0.75in]{geometry}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{float}
-\usepackage{hyperref}
-\usepackage{xurl}
-\usepackage{xcolor}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
 
-\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=black}
-
-\title{AI651\\ Assignment 1}
-\author{Roll number: 25280016 \quad Name: Abdul Sammad}
-\date{5 October 2026}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\renewcommand{\arraystretch}{1.15}
+\captionsetup{font=small}
 
 \begin{document}
-\maketitle
 
-\noindent\textbf{GitHub repository:} \url{https://github.com/AbdulSammad1/Deep-Learning-For-Space-Time-and-Graph-Assignment-1}
+\begin{center}
+    {\Large \textbf{AI651}}\\[0.3em]
+    {\large \textbf{Assignment 1}}
+\end{center}
+
+\textbf{Roll number:} 25280016 \hfill \textbf{Name:} Abdul Sammad\\
+\textbf{Date:} 5 October 2026\\
+\textbf{GitHub repository:} \href{https://github.com/AbdulSammad1/Deep-Learning-For-Space-Time-and-Graph-Assignment-1}{GitHub repository link}
 
 \section*{Response 1A}
+
 \textbf{Question:} Before Output 1.1, record the expected order of the four forecasters for stations 1--3 and for held-out station 4. Then compare both station groups and Products A, B, and C, quantify the gaps, revise the order if needed, and explain the gaps from each model's assumptions.
 
 \textbf{Answer:} Before running the code, I was expecting Period-routed ridge to be the best model. After that I was expecting Raw Attention, and then Shared ridge and Sensor-specific ridge. For station 4, Sensor-specific ridge cannot be used because this station was not present in training.
@@ -28,15 +35,14 @@ So after running the models, the result was basically the same as I expected. Th
 
 \begin{table}[H]
 \centering
-\small
 \begin{tabular}{lrrrr}
 \toprule
-Model & Stations 1--3 RMSE & Station 4 RMSE & Parameters & Fit time (s) \\
+\textbf{Model} & \textbf{Stations 1--3 RMSE} & \textbf{Station 4 RMSE} & \textbf{Parameters} & \textbf{Fit time (s)} \\
 \midrule
-Period-routed ridge & 0.166 & 0.173 & 59{,}904 & 0.034 \\
-Raw Attention & 0.438 & 0.637 & 368{,}368 & 75.092 \\
-Shared ridge & 0.767 & 0.876 & 4{,}608 & 0.030 \\
-Sensor-specific ridge & 0.768 & Not available & 13{,}824 & 0.109 \\
+Period-routed ridge & 0.166 & 0.173 & 59,904 & 0.034 \\
+Raw Attention & 0.438 & 0.637 & 368,368 & 75.092 \\
+Shared ridge & 0.767 & 0.876 & 4,608 & 0.030 \\
+Sensor-specific ridge & 0.768 & Not available & 13,824 & 0.109 \\
 \bottomrule
 \end{tabular}
 \caption{Output 1.1 validation RMSE.}
@@ -49,6 +55,7 @@ So the gap is quite clear. On stations 1--3, Raw Attention has about 2.6 times t
 The reason makes sense to me. Shared ridge is using one fixed rule for every window, but the products are not running at the same pace. Sensor-specific ridge makes a different rule for each station, but the pace can still change inside that station. Period-routed ridge first checks the pace and then uses the matching rule, so it has an advantage. Raw Attention can change the weights from one window to another, so it does better than the simple ridge models, but here it still does not beat the model which is directly using pace information.
 
 \section*{Response 1B}
+
 \textbf{Question:} Use Output 1.2 to show why one fixed map must compromise when the same station runs at two paces, and point to the phase or shape. Use Output 1.3 to show how the same learned projections can still produce different attention weights. Do not claim that attention recovered the physical period.
 
 \textbf{Answer:} So here I am checking the same station but with two different product speeds. Product A has period 16.135 samples and Product C has period 30.093 samples. Shared ridge gives RMSE 0.779 for the fast Product A run and 0.448 for the slower Product C run.
@@ -57,7 +64,7 @@ From the graph, on Product A the Shared ridge prediction is too smooth and some 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/output-1-2.png}
+\includegraphics[width=\textwidth]{figures/figure1.png}
 \caption{Output 1.2. Station 1 with Product A and Product C.}
 \end{figure}
 
@@ -65,11 +72,12 @@ Output 1.3 is a different check. The learned projections are the same, but the a
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/output-1-3.png}
+\includegraphics[width=\textwidth]{figures/figure2.png}
 \caption{Output 1.3. Attention weights for the two products.}
 \end{figure}
 
 \section*{Response 2}
+
 \textbf{Question:} State the selected moving-average width. Describe what changes in Outputs 2.1--2.3, including the validation comparison of Raw Attention and Attention plus decomposition. Explain why a moving average fits this drift-plus-vibration signal, and why the training-only period check is a fair way to choose the width. Give one case where this bias fails, or name another decomposition and the assumption it would make.
 
 \textbf{Answer:} So I selected moving-average width 41.
@@ -80,7 +88,7 @@ The Product C example in the figure has a true period of 32 samples. With width 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/output-2-1.png}
+\includegraphics[width=\textwidth]{figures/figure3.png}
 \caption{Output 2.1. Different moving-average widths.}
 \end{figure}
 
@@ -92,12 +100,13 @@ For Output 2.3, the useful point is the product-by-product result. On stations 1
 
 A moving average fits this signal because the drift is slow, around 240 samples, while the vibration repeats much faster, around 14 to 36 samples. So width 41 can mostly follow the slow movement and leave the faster repeating part in the leftover. Then the encoder can focus more on that repeating part, while the linear head handles the slow trend.
 
-This idea can fail if the signal suddenly jumps. A moving average can spread that jump over many samples and make it look like part of the vibration. Another option is a Hodrick--Prescott smoother, but that method is also making an assumption: it expects the trend to change smoothly.
+This idea can fail if the signal suddenly jumps. A moving average can spread that jump over many samples and make it look like part of the vibration. Another option is a Hodrick-Prescott smoother, but that method is also making an assumption: it expects the trend to change smoothly.
 
 \section*{Response 3}
+
 \textbf{Question:} Confirm the delay-score check and the aggregation example. From Output 3.2, which lags repeat most strongly, and how do they relate to the run's period? Why is the leftover cleaner than the raw signal, and why does that support delay mixing? Describe one signal for which a few repeating delays would be the wrong bias. Do not call the figure a plot of the trained model's scores.
 
-\textbf{Answer:} So first I checked the small series $[1, 3, 1, 3]$. The FFT delay scores are $[4, -4, 4, -4]$, and direct circular correlation gives the same values. Then for the aggregation example, the values are $[10, 20, 30, 40]$, delays are 1 and 3, and weights are 0.75 and 0.25. The result becomes $[35, 15, 25, 25]$. So the delay is reading from earlier positions in the sequence.
+\textbf{Answer:} So first I checked the small series [1, 3, 1, 3]. The FFT delay scores are [4, -4, 4, -4], and direct circular correlation gives the same values. Then for the aggregation example, the values are [10, 20, 30, 40], delays are 1 and 3, and weights are 0.75 and 0.25. The result becomes [35, 15, 25, 25]. So the delay is reading from earlier positions in the sequence.
 
 In Output 3.2, station 2 is on Product A and its true period is 16.135 samples. The strongest leftover correlations are 0.896 at delay 16 and 0.897 at delay 32. So these are almost one period and two periods. The raw signal does not show these peaks clearly. It mostly gives one wide hump because the rising drift still looks similar even after shifting it.
 
@@ -107,21 +116,21 @@ Delay mixing would be a bad choice for something like one single spike, because 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/output-3-2.png}
+\includegraphics[width=\textwidth]{figures/figure4.png}
 \caption{Output 3.2. Correlation of the signal, not trained model scores.}
 \end{figure}
 
 \section*{Response 4}
+
 \textbf{Question:} (a) In at most two sentences, before Output 4.1, say which upgrade should help most when the slow part is large, and why. (b) Report the validation RMSEs and MSEs, compare the two architectural switches, and summarize how error changes across the 48-step horizon. (c) Choose the deployment model for stations 1--3 and for station 4 using validation error, parameter count, and fit time.
 
 \textbf{Answer:} Before seeing Output 4.1, I thought decomposition should help most when the slow part is large. My reason was simple: it removes the slow trend first, while delay mixing is mainly trying to use the repeating part.
 
 \begin{table}[H]
 \centering
-\small
 \begin{tabular}{lrrrr}
 \toprule
-Model & St.\ 1--3 RMSE & St.\ 1--3 MSE & St.\ 4 RMSE & St.\ 4 MSE \\
+\textbf{Model} & \textbf{St. 1--3 RMSE} & \textbf{St. 1--3 MSE} & \textbf{St. 4 RMSE} & \textbf{St. 4 MSE} \\
 \midrule
 Period-routed ridge & 0.166 & 0.028 & 0.173 & 0.030 \\
 Autoformer-inspired & 0.198 & 0.039 & 0.242 & 0.059 \\
@@ -141,22 +150,23 @@ In Output 4.2, the error gets larger as the forecast goes further. So predicting
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/output-4-2.png}
+\includegraphics[width=0.92\textwidth]{figures/figure5.png}
 \caption{Output 4.2. RMSE over the 48 forecast steps.}
 \end{figure}
 
-For deployment, I would choose Period-routed ridge for both groups. It has the lowest validation error, only 59{,}904 parameters, and fit time is just 0.034 seconds. Autoformer-inspired is the best neural model, but its error is still higher, it has 373{,}026 parameters, and it takes around 192 seconds to fit. Sensor-specific ridge also cannot be used for station 4. On the final test data, Period-routed ridge gives RMSE 0.161 for stations 1--3 and 0.183 for station 4.
+For deployment, I would choose Period-routed ridge for both groups. It has the lowest validation error, only 59,904 parameters, and fit time is just 0.034 seconds. Autoformer-inspired is the best neural model, but its error is still higher, it has 373,026 parameters, and it takes around 192 seconds to fit. Sensor-specific ridge also cannot be used for station 4. On the final test data, Period-routed ridge gives RMSE 0.161 for stations 1--3 and 0.183 for station 4.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/output-4-1.png}
+\includegraphics[width=0.95\textwidth]{figures/figure6.png}
 \caption{Output 4.1. Example where the combined model gains and where it loses.}
 \end{figure}
 
 \section*{Task 2}
+
 \textbf{Question:} Describe the preprocessing, the model, and the reasons for those choices. Compare the optional external file on and off, on more than one seed, using a time-ordered validation split. State the parameter count and epoch count submitted to the leaderboard.
 
-\textbf{Answer:} So in Task 2, there are 43{,}656 old values and I have to predict the next 168 values, from time\_idx 43657 to 43824. The target is never negative and its average is around 98. It can also change a lot inside one 168-step block. As a very simple baseline, copying only the last value gives RMSE 245.2 on the last four blocks. Copying the last 24 steps gives 175.5, which is better but still quite high.
+\textbf{Answer:} So in Task 2, there are 43,656 old values and I have to predict the next 168 values, from \texttt{time\_idx} 43657 to 43824. The target is never negative and its average is around 98. It can also change a lot inside one 168-step block. As a very simple baseline, copying only the last value gives RMSE 245.2 on the last four blocks. Copying the last 24 steps gives 175.5, which is better but still quite high.
 
 For preprocessing, I put the past values on log scale. The mean and spread are calculated only from the data available at that stage, so future target values are not used by mistake. The six continuous external columns are scaled in the same way. The four on/off columns are already 0 or 1, so I left them like that.
 
@@ -170,20 +180,19 @@ For validation, I used the last four separate blocks of 168 steps in time order.
 
 \begin{table}[H]
 \centering
-\small
-\begin{tabular}{llrrrrr}
+\begin{tabular}{crrrrrr}
 \toprule
-External file & Seed & RMSE & MAE & sMAPE & Best epoch & Parameters \\
+\textbf{External file} & \textbf{Seed} & \textbf{RMSE} & \textbf{MAE} & \textbf{sMAPE} & \textbf{Best epoch} & \textbf{Parameters} \\
 \midrule
-Off & 0 & 96.65 & 79.31 & 101.43 & 8 & 54{,}663 \\
-Off & 1 & 96.65 & 79.57 & 101.73 & 3 & 54{,}663 \\
-On & 0 & 69.39 & 49.54 & 78.61 & 10 & 55{,}280 \\
-On & 1 & 69.67 & 49.70 & 79.84 & 9 & 55{,}280 \\
+Off & 0 & 96.65 & 79.31 & 101.43 & 8 & 54,663 \\
+Off & 1 & 96.65 & 79.57 & 101.73 & 3 & 54,663 \\
+On & 0 & 69.39 & 49.54 & 78.61 & 10 & 55,280 \\
+On & 1 & 69.67 & 49.70 & 79.84 & 9 & 55,280 \\
 \bottomrule
 \end{tabular}
 \caption{Task 2 validation with external file on and off.}
 \end{table}
 
-So the external file is clearly useful here. For both seeds, RMSE becomes better by around 27 points when I turn the external file on. Because of that, I used it in the final submission. I trained both seeds again and averaged their 168-step forecasts. The leaderboard submission reports 110{,}560 parameters and 20 epochs. The submission was at rank 38.
+So the external file is clearly useful here. For both seeds, RMSE becomes better by around 27 points when I turn the external file on. Because of that, I used it in the final submission. I trained both seeds again and averaged their 168-step forecasts. The leaderboard submission reports 110,560 parameters and 20 epochs. The submission was at rank 38.
 
 \end{document}
